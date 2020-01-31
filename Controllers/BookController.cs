@@ -59,14 +59,7 @@ namespace BookStorProject.Controllers
             {
                 try
                 {
-                    string fileName = string.Empty;
-                    if(model.File != null)
-                    {
-                        string uploads = Path.Combine(hosting.WebRootPath, "Uploads");
-                        fileName = model.File.FileName;
-                        string fullPath = Path.Combine(uploads, fileName);
-                        model.File.CopyTo(new FileStream(fullPath, FileMode.Create));
-                    }
+                    string fileName = UploadFile(model.File)?? string.Empty;
 
                     if (model.AuthorId == -1)
                     {
@@ -120,28 +113,12 @@ namespace BookStorProject.Controllers
         {
             try
             {
-                string fileName = string.Empty;
-                if (viewModel.File != null)
-                {
-                    string uploads = Path.Combine(hosting.WebRootPath, "Uploads");
-                    fileName = viewModel.File.FileName;
-                    string fullPath = Path.Combine(uploads, fileName);
 
-                    //Delete the old file
-                    string OldFileName = bookRepository.Find(viewModel.BookId).ImageUrl;
-                    string fullOldFile = Path.Combine(uploads, OldFileName);
-
-                    if(fullPath != fullOldFile)
-                    {
-                       System.IO.File.Delete(fullOldFile);
-                       //Save the new file
-                       viewModel.File.CopyTo(new FileStream(fullPath, FileMode.Create));
-                    }
-                }
-
+                string fileName = UploadFile(viewModel.File, viewModel.ImageUrl);
                 var author = authorRepository.Find(viewModel.AuthorId);
                 Book book = new Book
                 {
+                    Id = viewModel.BookId,
                     Title = viewModel.Title,
                     Description = viewModel.Description,
                     Author = author,
@@ -152,7 +129,7 @@ namespace BookStorProject.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(Exception ex)
             {
                 return View();
             }
@@ -196,5 +173,50 @@ namespace BookStorProject.Controllers
             };
             return model;
         }
+
+        string UploadFile( IFormFile file)
+        {
+            if(file != null)
+            {
+                string uploads = Path.Combine(hosting.WebRootPath, "Uploads");
+                string fullPath = Path.Combine(uploads, file.FileName);
+                file.CopyTo(new FileStream(fullPath, FileMode.Create));
+
+                return file.FileName;
+            }
+
+            return null;
+        }
+
+        string UploadFile(IFormFile file, string imageUrl)
+        {
+            if(file != null)
+            {
+                string upload = Path.Combine(hosting.WebRootPath, "Uploads");
+                string newPath = Path.Combine(upload, file.FileName);
+
+                string oldPath = Path.Combine(upload, imageUrl);
+
+                if(oldPath != newPath)
+                {
+                    //Delete the old file
+                    System.IO.File.Delete(oldPath);
+
+                    //Save the new file
+                    file.CopyTo(new FileStream(newPath, FileMode.Create));
+                }
+
+                return file.FileName;
+            }
+
+            return imageUrl;
+        }
+
+        public ActionResult Search(string term)
+        {
+            var result = bookRepository.Search(term);
+            return View("Index", result);
+        }
+
     }
 }

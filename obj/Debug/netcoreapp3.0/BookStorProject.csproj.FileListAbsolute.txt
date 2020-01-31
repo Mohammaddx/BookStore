@@ -132,3 +132,4 @@ F:\ASPProjects\BookStorProject\BookStorProject\obj\Debug\netcoreapp3.0\Razor\Vie
 F:\ASPProjects\BookStorProject\BookStorProject\obj\Debug\netcoreapp3.0\Razor\Views\Book\Edit.cshtml.g.cs
 F:\ASPProjects\BookStorProject\BookStorProject\obj\Debug\netcoreapp3.0\Razor\Views\Book\Delete.cshtml.g.cs
 F:\ASPProjects\BookStorProject\BookStorProject\obj\Debug\netcoreapp3.0\Razor\Views\Shared\_Validation.cshtml.g.cs
+F:\ASPProjects\BookStorProject\BookStorProject\bin\Debug\netcoreapp3.0\appsettings1.json

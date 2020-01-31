@@ -21,7 +21,7 @@ namespace BookStorProject.Models.Repo
                     ImageUrl="joker.png",
                     Author = new Author()
                 },
-                
+
                 new Book
                 {
                     Id=2,
@@ -62,6 +62,11 @@ namespace BookStorProject.Models.Repo
         public IList<Book> List()
         {
             return books;
+        }
+
+        public List<Book> Search(string term)
+        {
+            return books.Where(b => b.Title.Contains(term) || b.Description.Contains(term)).ToList();
         }
 
         public void Update(int id, Book newBook)
